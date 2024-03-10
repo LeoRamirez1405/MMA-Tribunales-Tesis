@@ -45,7 +45,7 @@ def TribunalesSinColisiones(M, TotalTribunales):
 #     return True
 
 #Una persona en un solo lugar:
-def PersonaNoColisionadas(M,TotalTribunales,j,T):
+def PersonaNoColisionadas(M,TotalTribunales,T):
     for h in range(len(M[0][0][0])): 
         for d in range(len(M[0])): 
             for l in range(len(M[0][0])): 
