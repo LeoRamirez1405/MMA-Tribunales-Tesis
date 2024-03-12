@@ -12,7 +12,7 @@ def Asignacion(Tribunales, Ct, d, l, h):
     n = sum(Ct)
     M = [[[[0 for d in range(d)] for l in range(l)] for h in range(h)] for t in range(t)]
     
-    pass
+    return M
 
 resultado = Asignacion(Tribunales, Ct, d, l, h)
 print(resultado)

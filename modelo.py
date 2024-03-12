@@ -1,4 +1,4 @@
-def creando_T(Tribunales):
+def creando_T(Tribunales, ):
     # Encuentra el número total de personas
     total_personas = max(max(tribunal) for tribunal in Tribunales)
     # Crea una matriz de ceros
@@ -12,6 +12,7 @@ def creando_T(Tribunales):
 #Restricciones:
 # Todos los tribunales tienen un espacio para cada tesis que debe defender con ellos:
 def TodosLosTribunales(M, TotalTribunales, Ct):
+    print(M)
     for t in range(TotalTribunales):
         for h in range(len(M[0][0][0])): 
             for l in range(len(M[0][0])): 
