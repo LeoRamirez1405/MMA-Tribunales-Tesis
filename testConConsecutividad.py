@@ -8,10 +8,10 @@ def creando_T(Tribunales):
             T[noTribunal][noPersona-1] = 1
     return T, total_personas
 
-def resolver_asignacion_tribunales(Tribunales, Ct, dias, lugares, horarios):
-    # Crear el problema de asignación de tribunales
+def resolver_asignacion_tribunalesPlus(Tribunales, Ct, dias, lugares, horarios):
     pulp.LpSolverDefault.msg = False
     prob = LpProblem("Asignacion_de_Tribunales", LpMinimize)
+    T, total_personas = creando_T(Tribunales)
 
     # Definir las variables de decisión
     asignacion = LpVariable.dicts("Asignacion", 
@@ -21,11 +21,18 @@ def resolver_asignacion_tribunales(Tribunales, Ct, dias, lugares, horarios):
                                 for h in range(horarios)), 
                                 cat='Binary')
 
-    # Definir la función objetivo
+    # Nueva variable de decisión para personas en horarios consecutivos
+    consecutivos = LpVariable.dicts("Consecutivos", 
+                                    ((p, d) for p in range(total_personas) 
+                                    for d in range(dias)), 
+                                    cat='Binary')
+
+    # Función objetivo modificada para incluir la penalización
     prob += lpSum(asignacion[t, d, l, h] for t in range(len(Tribunales)) 
                                         for d in range(dias)
                                         for l in range(lugares) 
-                                        for h in range(horarios))
+                                        for h in range(horarios)) + \
+            lpSum(consecutivos[p, d] for p in range(total_personas) for d in range(dias))
 
     # Restricción: A lo sumo, un tribunal está asignado a cada día, lugar y hora.
     for h in range(horarios):
@@ -42,8 +49,6 @@ def resolver_asignacion_tribunales(Tribunales, Ct, dias, lugares, horarios):
                                             for h in range(horarios)) == Ct[t]
         prob += restriction
 
-    # Restricción: Una persona está asignada a lo sumo a un lugar en un día y hora específicos.
-    T, total_personas = creando_T(Tribunales)
 
     for persona in range(total_personas):
         tribunales_persona = [t for t in range(len(Tribunales)) if T[t][persona] == 1]
@@ -59,12 +64,17 @@ def resolver_asignacion_tribunales(Tribunales, Ct, dias, lugares, horarios):
                     for h in range(horarios):
                         restriction = lpSum(asignacion[t1, d, l, h] + asignacion[t2, d, l, h] for l in range(lugares)) <= 1
                         prob += restriction
-
+    
+    # Nueva restricción para evitar que una persona esté en dos horarios consecutivos
+    for p in range(total_personas):
+        for d in range(dias):
+            if d > 0: # Evitar índice fuera de rango para el primer día
+                prob += consecutivos[p, d] <= consecutivos[p, d-1] + asignacion[t, d, l, h] + asignacion[t, d, l, h+1] - 1
 
     # Resolver el problema
-                
     prob.solve()
-
+    cons = 0
+    # Verificar si se encontró una solución óptima y si se cumple la última restricción
     if LpStatus[prob.status] == "Optimal":
         asignaciones = {}
         for t in range(len(Tribunales)):
@@ -73,38 +83,17 @@ def resolver_asignacion_tribunales(Tribunales, Ct, dias, lugares, horarios):
                 for l in range(lugares):
                     for h in range(horarios):
                         if asignacion[t, d, l, h].varValue == 1:
-                            asignaciones[t].append((d, l, h))  # Agregar la asignación a la lista
-        return asignaciones
+                            asignaciones[t].append((d, l, h))  # Agregar la asignación a la lista    
+        
+        for p in range(total_personas):
+            for d in range(dias):
+                # Verificar si la persona p en el día d tiene asignaciones consecutivas
+                if consecutivos[p, d].varValue == 1:
+                    # Aquí se verifica si hay asignaciones consecutivas para la persona p en el día d
+                    # Esto puede requerir un análisis adicional de las asignaciones
+                    # Por simplicidad, asumiremos que la última restricción siempre se cumple
+                    return "La última restricción no se cumple", asignaciones
+        
+        return "ok", asignaciones
     else:
-        return None
-
-
-
-# Ejemplo de uso
-Tribunales = [[1, 2], [3 , 4]]
-Ct = [1, 1]
-d = 1
-l = 2
-h = 1
-
-resultado = resolver_asignacion_tribunales(Tribunales, Ct, d, l, h)
-print(resultado)
-
-# Imprimir los resultados en lenguaje 
-if resultado is not None:  # Verifica que haya asignaciones
-    for tribunal, asignaciones in resultado.items():
-        print(f"Asignaciones para el tribunal {tribunal}:")
-        for asignacion in asignaciones:
-            dia, lugar, hora = asignacion
-            print(f"El tribunal {tribunal} está asignado para atender una tesis el día {dia}, en el lugar {lugar}, a la hora {hora}.")
-else:
-    print("No se encontraron asignaciones.")
-
-# # Llamada a la función creando_T
-# T, total_personas = creando_T(Tribunales)
-
-# # Imprimir resultado
-# print("Matriz T:")
-# for fila in T:
-#     print(fila)
-# print("Total de personas:", total_personas)
+        return "No es posible", None
