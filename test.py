@@ -5,26 +5,32 @@ import random
 
 #Tribunales = [[random.randint(1, 45) for _ in range(3)] for _ in range(50)]
 #
-#Ct = [random.randint(1, 2) for _ in range(50)]
-#d = 5
-#l = 5
-#h = 4
+#Ct = [random.randint(1, 5) for _ in range(50)]
+#d = 7
+#l = 8
+#h = 7
 
 Tribunales = [[1,2,3],[3,4,5]]
 
 Ct = [1,1]
 d = 1
-l = 1
+l = 2
 h = 2
 
+restricciones = {
+    1: {
+        'd': [],
+        'l': [0],
+        'h': []
+    }
+}
 
 
-msg, resultado = resolver_asignacion_tribunalesPlus(Tribunales, Ct, d, l, h)
-print(msg)
+resultado = resolver_asignacion_tribunales(Tribunales, Ct, d, l, h,restricciones)
 print(resultado)
 
 # Imprimir los resultados en lenguaje 
-if resultado is not None:  # Verifica que haya asignaciones
+if resultado is not None and type(resultado) is not str:  # Verifica que haya asignaciones
     for tribunal, asignaciones in resultado.items():
         print(f"Asignaciones para el tribunal {tribunal}:")
         for asignacion in asignaciones:
