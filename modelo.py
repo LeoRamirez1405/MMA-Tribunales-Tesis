@@ -8,7 +8,7 @@ def creando_T(Tribunales):
             T[noTribunal][noPersona-1] = 1
     return T, total_personas
 
-def resolver_asignacion_tribunales(Tribunales, Ct, dias, lugares, horarios,restricciones):
+def resolver_asignacion_tribunales(Tribunales, Ct, dias, lugares, horarios, restricciones):
     # Crear el problema de asignación de tribunales
     pulp.LpSolverDefault.msg = False
     prob = LpProblem("Asignacion_de_Tribunales", LpMinimize)
@@ -106,6 +106,7 @@ def resolver_asignacion_tribunales(Tribunales, Ct, dias, lugares, horarios,restr
         return asignaciones
     else:
         return f"No se encontró una solución óptima. Estado del problema: {LpStatus[prob.status]}"
+    
 
 
 

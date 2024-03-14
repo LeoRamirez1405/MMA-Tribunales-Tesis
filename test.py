@@ -1,6 +1,7 @@
 from modelo import resolver_asignacion_tribunales
 from testConConsecutividad import resolver_asignacion_tribunalesPlus
 import random
+from save import save
 # Ejemplo de uso
 
 #Tribunales = [[random.randint(1, 45) for _ in range(3)] for _ in range(50)]
@@ -10,11 +11,11 @@ import random
 #l = 8
 #h = 7
 
-Tribunales = [[1,2,3],[3,4,5]]
+Tribunales = [[1,2,3],[3,4,5],[1,4,6],[2,5,6],[4,5,6],[1,3,6]]
 
-Ct = [1,1]
-d = 1
-l = 2
+Ct = [3,1,2,2,1,3]
+d = 6
+l = 3
 h = 2
 
 restricciones = {
@@ -27,6 +28,7 @@ restricciones = {
 
 
 resultado = resolver_asignacion_tribunales(Tribunales, Ct, d, l, h,restricciones)
+save(resultado)
 print(resultado)
 
 # Imprimir los resultados en lenguaje 
