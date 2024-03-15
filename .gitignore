@@ -3,6 +3,12 @@ __pycache__/
 *.py[cod]
 *$py.class
 
+# Ignorar todo en la carpeta informe
+Informe/*
+
+# Pero no ignorar archivos PDF en la carpeta informe
+!Informe/*.pdf
+
 # C extensions
 *.so
 
