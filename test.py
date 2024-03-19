@@ -1,6 +1,6 @@
 from modelo import resolver_asignacion_tribunales
 import random
-from save import save
+from save import save, get_data
 # Ejemplo de uso
 
 Tribunales = [[random.randint(1, 20) for _ in range(3)] for _ in range(20)]
@@ -23,7 +23,7 @@ restricciones = {
     }
 }
 
-
+data = get_data('')
 resultado = resolver_asignacion_tribunales(Tribunales, Ct, d, l, h,restricciones)
 print(resultado)
 
