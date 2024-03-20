@@ -1,6 +1,6 @@
 from modelo import resolver_asignacion_tribunales
 import random
-from save import save
+from save import save, get_data
 
 # Ejemplo de uso
 
@@ -12,8 +12,8 @@ h = 7
 
 restricciones = {1: {"d": [], "l": [0], "h": []}, 3: {"d": [1, 2], "l": [], "h": []}}
 
-
-resultado = resolver_asignacion_tribunales(Tribunales, d, l, h, restricciones)
+data = get_data("")
+resultado = resolver_asignacion_tribunales(Tribunales, Ct, d, l, h, restricciones)
 print(resultado)
 
 # Imprimir los resultados en lenguaje
